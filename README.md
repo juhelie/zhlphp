@@ -3,9 +3,9 @@
 
 #### 运行条件 
 > PHP+MYSQL  
-* php5.3以上版本
-* mysql5以上版本
-* php运行环境（如apache）
+> * php5.3以上版本
+> * mysql5以上版本
+> * php运行环境（如apache）
 
 #### 特点 
 > 小、精、简、快、易 
