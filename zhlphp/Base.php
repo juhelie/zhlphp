@@ -15,7 +15,6 @@ defined('SYS_APP_PATH') or define('SYS_APP_PATH', 'app');           // 应用路
 defined('SYS_APP_DEFAULT') or define('SYS_APP_DEFAULT', 'index');   // 指向默认模块
 defined('SYS_DEBUG') or define('SYS_DEBUG', false);                 // 调试开关
 defined('SYS_PAGE404') or define('SYS_PAGE404', false);             // 404页面开关
-defined('SYS_VISIT_SAFE') or define('SYS_VISIT_SAFE', false);       // 安全访问监控
 defined('SYS_URL_BOGUS') or define('SYS_URL_BOGUS', false);         // 伪静态开关
 defined('SYS_APP_URLFIX') or define('SYS_APP_URLFIX', '.html');     // 伪静态后缀初始值
 if(SYS_URL_BOGUS){
@@ -108,15 +107,10 @@ if(isset($_GET['phpzhlurl'])){
 
 require SYS_ROOT.'helper.php';  // 框架函数
 require SYS_ROOT.'log.php';     // 日志文件
+require SYS_ROOT.'annex.php';  // 核心入口-组件扩展
+
 define('SYS_START_MEMORY',  memory_get_usage());        // 系统初始内存
 define('SYS_START_TIME',  microtime(true)); // 系统运行起始时间
-
-// 安全访问检测（开启安全开关 & 不是接口）
-if(SYS_VISIT_SAFE && !isset($_REQUEST['asktype'])){
-    //if(SYS_PRO_PATH == SYS_APP_DEFAULT){ // 检测默认模块
-        include 'public/safeverify/safemain.php';
-    //}
-}
 
 // 包含项目配置文件
 if(file_exists(SYS_PATH . 'config/config.php')){

@@ -33,7 +33,7 @@ print_r($this->variables);
 echo '<br><br>';
 $r = runCost();
 print_r($r);
-loger($r);
+
 ?>
 
 
