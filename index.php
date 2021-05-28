@@ -1,6 +1,6 @@
 <?php
 header("Content-type: text/html; charset=utf-8");
-
+//append annex
 // 应用目录
 define('SYS_PATH', __DIR__.'/');
 
