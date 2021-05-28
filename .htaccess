@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+	#RewriteCond %{HTTP_HOST} !^www\..+$ [NC]
+	#RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+	#RewriteCond %{http_host} ^yj521.com$
+	#RewriteRule ^(.*)$https://www.yj521.com/$1 [R=301,L]
+
+    RewriteCond %{REQUEST_URI} !(public|uploads|job)
+    RewriteCond %{REQUEST_URI} !(\.css|\.js|\.png|\.jpeg|\.jpg|\.gif|\.txt|\.zip|\.rar)$ [NC]
+
+    # 确保请求路径不是一个文件名或目录
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # 重定向所有请求到 index.php?phpzhlurl=PATHNAME
+    RewriteRule ^(.*)$ index.php?zhlphpurl=$1 [PT,L]
+</IfModule>

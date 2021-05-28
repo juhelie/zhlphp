@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title><?php //echo $title;?></title>
+    <meta name="keywords" content="<?php //echo $keywords;?>">
+    <meta name="description" content="<?php //echo $description;?>">
+    <!-- 设置缩放 -->
+    <meta name="viewport" content="minimal-ui,width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!-- IOS中禁用将数字识别为电话号码/忽略Android平台中对邮箱地址的识别 -->
+    <meta name="format-detection" content="telephone=no">
+    <!-- windows phone 点击无高光 -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <script>
+
+    </script>
+    <style>
+
+    </style>
+</head>
+<body>
+<?php
+//echo $title;
+echo '<br><br>';
+echo $this->title;
+echo '<br><br>';
+echo $this->title2;
+echo '<br><br>';
+echo $this->title3;
+echo '<br><br>';
+print_r($this->variables);
+echo '<br><br>';
+$r = runCost();
+print_r($r);
+loger($r);
+?>
+
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
