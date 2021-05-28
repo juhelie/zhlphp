@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 
 if(substr(PHP_VERSION, 0, 3) < '5.3'){exit("PHP版本过低，必须5.3及以上");}   // PHP运行环境
-const SYS_VERSION = '2.1';          // 系统版本
+const SYS_VERSION = '2.2';          // 系统版本
 const SYS_WILL_FIX = '.php';        // 自定义类文件扩展名
 const SYS_CLASS_EXT = '.class.php'; // 核心类文件扩展名
 define('SYS_ROOT', __DIR__.'/');    // 核心文件目录（绝对路径）
