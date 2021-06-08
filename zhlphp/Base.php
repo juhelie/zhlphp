@@ -78,6 +78,7 @@ if(count($mouldArr) >= 2){
         array_shift($mouldArr);
     }
 }
+$mouldArr[0] = $mouldArr[0] ? $mouldArr[0] : 'index';
 // 定义功能模块
 defined('SYS_PRO_PATH') or define('SYS_PRO_PATH', $appMould);
 // 获取控制器
