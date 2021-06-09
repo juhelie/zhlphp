@@ -101,9 +101,9 @@ if(!empty($urlParam)){
     }
 }
 // 删除默认参数
-if(isset($_GET['phpzhlurl'])){
-    unset($_GET['phpzhlurl']);
-    unset($_REQUEST['phpzhlurl']);
+if(isset($_GET['zhlphpurl'])){
+    unset($_GET['zhlphpurl']);
+    unset($_REQUEST['zhlphpurl']);
 }
 
 require SYS_ROOT.'helper.php';  // 框架函数
