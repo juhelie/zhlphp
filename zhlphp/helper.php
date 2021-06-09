@@ -135,7 +135,7 @@ if(!function_exists('runCosts')){
 if(!function_exists('redirect')){
 	function redirect($url, $type=''){
 		$url = $type ? $url : HTTP_PATH.$url;
-		header("Location: ".$url);
+		header("Location: ".$url);exit;
 	}
 }
 
