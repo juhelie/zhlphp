@@ -21,7 +21,7 @@ class Fun {
             if(!isset($_REQUEST[$name])){
                 return null;
             }
-	    $var = $_REQUEST[$name];
+	        $var = $_REQUEST[$name];
         }
         return $this->varArr($var, $type, $leng, $start);
     }

@@ -29,6 +29,30 @@ if(!function_exists('cookiesCount')) {
 }
 
 /**
+ * Notes: 字符串-加密
+ * Desc: 兼容字符串特殊字符加密
+ */
+if(!function_exists('sys_encrypt')) {
+    function sys_encrypt($string, $key)
+    {
+        $string = base64_encode(openssl_encrypt($string, 'AES-128-ECB', $key, OPENSSL_RAW_DATA));
+        return rtrim(strtr($string, '+/', '-_'), '=');
+    }
+}
+
+/**
+ * Notes: 字符串-解密
+ * Desc: 兼容字符串特殊字符解密
+ */
+if(!function_exists('sys_decrypt')) {
+    function sys_decrypt($string, $key)
+    {
+        $string = str_pad(strtr($string, '-_', '+/'), strlen($string) % 4, '=', STR_PAD_RIGHT);
+        return openssl_decrypt(base64_decode($string), 'AES-128-ECB', $key, OPENSSL_RAW_DATA);
+    }
+}
+
+/**
  * 设置sessions
  */
 if(!function_exists('setSessions')){
@@ -133,10 +157,12 @@ if(!function_exists('runCosts')){
  * 重定向
  */
 if(!function_exists('redirect')){
-	function redirect($url, $type=''){
-		$url = $type ? $url : HTTP_PATH.$url.SYS_APP_URL_FIX;
-		header("Location: ".$url);exit;
-	}
+    function redirect($url){
+        if(stripos($url,'http://') == false && stripos($url,'https://') == false){
+            $url = HTTP_PATH.$url.SYS_APP_URL_FIX;
+        }
+        header("Location: ".$url);exit;
+    }
 }
 
 /**

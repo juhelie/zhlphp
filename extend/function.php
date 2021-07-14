@@ -292,14 +292,13 @@ if (!function_exists('getTree')) {
  */
 if (!function_exists('comm_alert')) {
     function comm_alert($txt, $url = '', $time = 3, $type=false){
-
         $html =  '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
         $html .= '<meta name="viewport" content="minimal-ui,width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">';
         $html .= '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">';
         $html .= '<title>提示</title></head><body class="noselect">';
         $html .=  '<style>';
-        $html .=  '.pop_slide{position: fixed;top: 0;width: 100%;height: 100%;z-index: 999;background: rgba(0,0,0,0.5);}';
-        $html .=  '.pop_slide .short_textBox{position: absolute;top: 35%;width: 300px;left: 50%;margin-left:-175px;background: #fff;z-index: 1000;text-align: center;border-radius: 10px;}';
+        $html .=  '*{margin:0;padding:0;}.pop_slide{position: fixed;top: 0;width: 100%;height: 100%;z-index: 999;background: rgba(0,0,0,0.5);}';
+        $html .=  '.pop_slide .short_textBox{position: absolute;top: 35%;width: 300px;left: 50%;margin-left:-150px;background: #fff;z-index: 1000;text-align: center;border-radius: 10px;}';
         $html .=  '.pop_slide .short_textBox .short_text{font-size: 16px;font-size: 16px;line-height: 25px;padding: 30px 20px 30px 20px;text-align: center;}';
         $html .=  '.pop_slide .short_textBox .popbtm .left{display:inline-block;width: 50%;text-align: center;line-height: 35px;font-size: 16px;background: #ccc;color: #fff;border-radius: 0 0 0 10px;}';
         $html .=  '.pop_slide .short_textBox .popbtm .right{display:inline-block;width: 50%;text-align: center;line-height: 35px;font-size: 16px;background: #3dc6da;color: #fff;border-radius: 0 0 10px 0;}';
@@ -310,7 +309,7 @@ if (!function_exists('comm_alert')) {
             $html .=  '<script>function returnback(){window.location.href="'.$url.'";}</script>';
         }else{
             if($type){
-                $html .=  '<script>function returnback(){window.location.href=history.go(-1);location.reload();}</script>';
+                $html .=  '<script>function returnback(){window.location.href=window.document.referrer;}</script>';
             }else{
                 $html .=  '<script>function returnback(){window.location.href=history.go(-1);}</script>';
             }

@@ -29,19 +29,20 @@ if(SYS_URL_BOGUS){
 $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 // 当前项目访问主连接/当前项目根目录连接/项目域名
 $www_url = $http_type.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-$www_url = str_replace("\\", '/', $www_url); // 反斜杠替换成斜杠
+$web_url = strtr($www_url,"\\","/");
 $www_url = rtrim($www_url, '/'); // 去掉后边的斜杠
 // 项目域名路径
 define('HTTP_PATH', $www_url.'/');
 // 获取完整url
 $web_url = $http_type.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-$web_url = str_replace("\\", '/', $web_url);
+$web_url = strtr($web_url,"\\","/");
 $web_url = rtrim($web_url, '/');
 // 参数串
 $url_param = isset($_GET['zhlphpurl']) ? $_GET['zhlphpurl'] :  '';
 // 开启伪静态时验证连接
 if(SYS_URL_BOGUS){
-    if(strstr($web_url,SYS_APP_URL_FIX) == null){ // 当前连接后缀不合法时
+    //if(strstr($web_url,SYS_APP_URL_FIX) == null){ // 当前连接后缀不合法时
+    if(strpos($web_url,SYS_APP_URL_FIX) === false){ //
         if($web_url != $www_url ){ // 判断不是主页
             $web_url = $web_url.SYS_APP_URL_FIX; // 当前连接拼接url后缀
             // 数据提交类型
