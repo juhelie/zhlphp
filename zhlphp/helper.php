@@ -158,8 +158,12 @@ if(!function_exists('runCosts')){
  */
 if(!function_exists('redirect')){
     function redirect($url){
-        if(stripos($url,'http://') == false && stripos($url,'https://') == false){
-            $url = HTTP_PATH.$url.SYS_APP_URL_FIX;
+        if($url){
+            if(stripos($url,'http://') == false && stripos($url,'https://') == false){
+                $url = HTTP_PATH.$url.SYS_APP_URL_FIX;
+            }
+        }else{
+            $url = HTTP_PATH;
         }
         header("Location: ".$url);exit;
     }
