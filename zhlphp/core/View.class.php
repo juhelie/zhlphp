@@ -21,7 +21,8 @@ class View {
 	 * @desc  
 	 */
     function set($name, $value) {
-        $this->$name = $value;
+        //$this->$name = $value;
+        //$this->variables[$name] = $value;
         $this->var[$name] = $value;
     }
 	

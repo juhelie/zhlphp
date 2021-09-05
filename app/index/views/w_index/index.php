@@ -22,15 +22,17 @@
 <body>
 <?php
 //echo $title;
-echo '<br><br>';
+echo '<br>1<br>';
 echo $this->title;
-echo '<br><br>';
+echo '<br>2<br>';
 echo $this->title2;
-echo '<br><br>';
+echo '<br>3<br>';
 echo $this->title3;
-echo '<br><br>';
-print_r($this->variables);
-echo '<br><br>';
+echo '<br>4<br>';
+print_r($this->var);
+echo '<br>5<br>';
+echo $title;
+echo '<br>=====<br>';
 $r = runCost();
 print_r($r);
 
