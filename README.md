@@ -20,6 +20,7 @@
 > * 添加核心架构配置 
 > * 优化系统函数重构辅助函数和数据库类设计模式  
 > * 添加多数据库支持  
-> * 优化基类Controller,Model,View   
+> * 优化基类Controller,Model,View  
+> * 移除loger.png文件整合loger方法    
 #### 版权信息  
 > zhl个人版权所有 
