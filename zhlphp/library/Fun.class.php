@@ -2,10 +2,32 @@
 // +----------------------------------------------------------------------
 // | Class 系统内置辅助方法
 // +----------------------------------------------------------------------
-// | Copyright (c) 2018
+// | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
 class Fun {
+
+    //定义静态变量保存当前类的实例
+    private static $instance;
+
+    //防止在外部实例化
+    private function __construct(){
+
+    }
+
+    //防止在外部克隆
+    private function __clone(){
+
+    }
+
+    //通过静态公有的方法获取这个类的实例
+    public static function getInstance(){
+        //当前对象不属于当前例就实例化
+        if (!self::$instance instanceof self) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     /**
      * @fun   过滤函数
@@ -65,27 +87,16 @@ class Fun {
             }
         }
         // 截取长度
-        if($value && $leng>0){
-            if($type == 'f'){
-                $value = round($value, $leng);
-            }else{
-                $value = mb_substr($value,intval($start),intval($leng),'utf-8');
+        if($value){
+            if($leng > 0){
+                if($type == 'f'){
+                    $value = round($value, $leng);
+                }else{
+                    $value = mb_substr($value,intval($start),intval($leng),'utf-8');
+                }
             }
         }
         return $value;
-        //return $this->sysurldecode($value);
-    }
-
-    /**
-     * Notes: decode
-     * User: ZHL
-     * Date: 2020/5/19
-     */
-    public function sysurldecode($str) {
-        if(preg_match('#%[0-9A-Z]{2}#isU', $str) > 0) {
-            $str = urldecode($str);
-        }
-        return $str;
     }
 
     /**
@@ -115,22 +126,32 @@ class Fun {
      * @fun 手机号验证
      */
     public function isPhone($str){
-        return preg_match("/^1[3456789]{1}\d{9}$/",str);
+        return preg_match("/^1[23456789]{1}\d{9}$/",str);
     }
 
     /**
      * @fun 数组转json
      */
     public function json($arr){
-        echo @json_encode($arr, 320);exit;
-        //JSON_FORCE_OBJECT
-        //JSON_UNESCAPED_UNICODE
+        $json = json_encode($arr,320);
+        $jsonErr = json_last_error();
+        if($jsonErr){
+            sysloger('json_encode(),Error:'.$jsonErr,dirname(__FILE__).'/Fun.class.php',__LINE__);
+            return '';
+        }
+        return $json;
     }
 
     /**
      * @fun json转数组
      */
-    public function turnArr($json){
-        return @json_decode($json, true);
+    public function arr($json){
+        $arr = json_decode($json,true);
+        $jsonErr = json_last_error();
+        if($jsonErr){
+            sysloger('json_decode(),Error:'.$jsonErr,dirname(__FILE__).'/Fun.class.php',__LINE__);
+            return array();
+        }
+        return $arr;
     }
 }

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Class  视图基类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2018
+// | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
 class View {
@@ -63,7 +63,7 @@ class View {
 		if(file_exists($contentPage)){
 			include (SYS_PATH . SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/'.$controller.'/'.$action.'.php');
 		}else{
-			exit('error : 没有找到'.SYS_PRO_PATH.'/'.$controller.'/'.$action.'.php 视图文件');
+            sysloger('error : 没有找到'.SYS_PRO_PATH.'/'.$controller.'/'.$action.'.php 视图文件', 'Core.php', __LINE__);
 		}
         // 页脚文件（控制器存在页脚覆盖外层页脚）
         if(file_exists($controllerFooter)){

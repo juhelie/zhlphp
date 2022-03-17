@@ -2,25 +2,54 @@
 // +----------------------------------------------------------------------
 // | Class  Mysql操作基类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2018
+// | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
 class MySqls {
-	
-    protected $_dbCon;
-    protected $_result;
+
+    private $_dbCon;
+    private $_result;
+    private $_tableFix;
+
+    //定义静态变量保存当前类的实例
+    private static $instance;
+
+    //防止在外部实例化
+    private function __construct($config){
+        $this->_tableFix = $config['db_fix'];
+        $this->connect($config['db_host'], $config['db_user'], $config['db_pwd'], $config['db_name'], $config['db_port'], $config['db_char']);
+    }
+
+    //防止在外部克隆
+    private function __clone(){
+
+    }
+
+    //通过静态公有的方法获取这个类的实例
+    public static function getInstance($config){
+        //当前对象不属于当前例就实例化
+        if (!self::$instance instanceof self) {
+            self::$instance = new self($config);
+        }
+        return self::$instance;
+    }
 
 	/**
 	 * @fun   连接数据库
 	 * @desc  
 	 */
-    function connect($address, $account, $pwd, $dbname, $port){
-        $this->_dbCon = @mysqli_connect($address, $account, $pwd, $dbname, $port);
+    function connect($address, $account, $pwd, $dbname, $port, $char){
+        try {
+            $this->_dbCon = mysqli_connect($address, $account, $pwd, $dbname, $port);
+        } catch (mysqli_sql_exception $e) {
+            sysloger($e->getMessage(), dirname(__FILE__).'/MySqls.php', __LINE__);
+        }
+
         if(!$this->_dbCon){
 			$errTxt = iconv("GB2312","UTF-8//IGNORE",mysqli_connect_error()); 
 			exit('Error('.mysqli_connect_errno().'):'.$errTxt);
         }else{
-            mysqli_query($this->_dbCon,'set names utf8');
+            mysqli_query($this->_dbCon,'set names '.strtolower($char));
             return 1;
         }
     }
@@ -170,9 +199,9 @@ class MySqls {
 	 * @desc  
 	 */
 	private function setTable($params){
-		$table = $this->_table;
+		//$table = $this->_table;
 		if(isset($params['table']) && $params['table']){
-			$table = $this->sqlVal(strtolower(SYS_DB_PREFIX.$params['table']));
+			$table = $this->sqlVal(strtolower($this->_tableFix.$params['table']));
 		}
 		return $table;
 	}
@@ -194,19 +223,19 @@ class MySqls {
 		$sqlArr['leftJoin'] = '';
 		if(isset($params['leftjoin']) && $params['leftjoin']){
 			foreach($params['leftjoin'] as $k=>$v){
-				$sqlArr['leftJoin'] .= ' left join '.SYS_DB_PREFIX.$k.' '.$this->sqlVal(strtolower($v));
+				$sqlArr['leftJoin'] .= ' left join '.$this->_tableFix.$k.' '.$this->sqlVal(strtolower($v));
 			}
 		}
 		$sqlArr['rightJoin'] = '';
 		if(isset($params['rightjoin']) && $params['rightjoin']){
 			foreach($params['rightjoin'] as $k=>$v){
-				$sqlArr['rightJoin'] .= ' right join '.SYS_DB_PREFIX.$k.' '.$this->sqlVal(strtolower($v));
+				$sqlArr['rightJoin'] .= ' right join '.$this->_tableFix.$k.' '.$this->sqlVal(strtolower($v));
 			}
 		}
 		$sqlArr['innerJoin'] = '';
 		if(isset($params['innerjoin']) && $params['innerjoin']){
 			foreach($params['innerjoin'] as $k=>$v){
-				$sqlArr['innerJoin'] .= ' inner join '.SYS_DB_PREFIX.$k.' '.$this->sqlVal(strtolower($v));
+				$sqlArr['innerJoin'] .= ' inner join '.$this->_tableFix.$k.' '.$this->sqlVal(strtolower($v));
 			}
 		}
 		return $sqlArr;

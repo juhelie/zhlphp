@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Class  Helper 系统基础方法
 // +----------------------------------------------------------------------
-// | Copyright (c) 2018
+// | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
 /**
@@ -146,8 +146,7 @@ if(!function_exists('delCookies')){
 if(!function_exists('runCosts')){
 	function runCost(){
 		return array(
-		    'unit'=>'s',
-			'times'=>round((microtime(true) - SYS_START_TIME) * 1000, 3),
+			'times'=>round((microtime(true) - SYS_START_TIME), 3),
 			'ram'=>round((memory_get_usage() - SYS_START_MEMORY) / 1024, 2)
 		);
 	}
@@ -191,50 +190,6 @@ if(!function_exists('jump')){
 }
 
 /**
- * 栏目路由
- */
-if(!function_exists('setClassUrl')){
-    function setClassUrl($param){
-        if(!isset($param['id']) || !$param['id'] || !isset($param['url']) || !$param['url']){
-            return '';
-        }
-        $id = intval($param['id']);
-        $url = trim($param['url']);
-        $gourl = isset($param['gourl']) ? trim($param['gourl']) : '';
-        $htmlflag = isset($param['htmlflag']) ? intval($param['htmlflag']) : 1;
-        if(!$gourl){
-            $gourl = $url.SYS_APP_URL_FIX;
-            if($htmlflag == 2){
-                $gourl = 'item/'.$url.'/'.$id.SYS_APP_URL_FIX;
-            }else if($htmlflag == 3) {
-                $gourl = $url.'/item/'.$id.SYS_APP_URL_FIX;
-            }
-        }
-        return $gourl;
-    }
-}
-
-/**
- * 文章路由
- */
-if(!function_exists('setEssayUrl')){
-    function setEssayUrl($param){
-        if(!isset($param['id']) || !$param['id']){
-            return '';
-        }
-        $classM = isset($param['mould']) && $param['mould'] ? $param['mould'] : '';
-        if(isset($param['tpl']) && $param['tpl']){
-            $classM = $param['tpl'];
-        }
-        $classM = str_replace(array(" ","　","\t","\n","\r"),array("","","","",""),$classM);
-        if(!$classM){
-            return '';
-        }
-        return HTTP_PATH.$classM.'/'.$param["id"].SYS_APP_URL_FIX;
-    }
-}
-
-/**
  * 路由拼接
  */
 if(!function_exists('sysUrlFix')){
@@ -242,3 +197,51 @@ if(!function_exists('sysUrlFix')){
         return HTTP_PATH.$url.SYS_APP_URL_FIX;
     }
 }
+
+/**
+ * 系统日志
+ */
+if(!function_exists('sysloger')){
+    function sysloger($str, $errorFile='', $errorLine='0'){
+        $errorStr = '[' . date('Y-m-d H:i:s') . '][SYS] '.$str.' in '.$errorFile.' on line '.$errorLine . PHP_EOL;
+        if(SYS_DEBUG_LOG){
+            error_log($errorStr, 3, SYS_LOG_PATH . 'SYS' .date('Y_m_d') . '.log', 'extra');
+        }
+        if(SYS_PAGE404){
+            header("Location: ".HTTP_PATH."404.html");
+        }else if(SYS_DEBUG){
+            exit($errorStr);
+        }
+    }
+}
+
+/**
+ * loger
+ */
+if(!function_exists('loger_r')) {
+    function loger_r($s){
+        echo '<pre>';
+        print_r($s);
+        echo '</pre>';
+        exit;
+    }
+}
+
+if(!function_exists('loger_d')) {
+    function loger_d($s){
+        echo '<pre>';
+        var_dump($s);
+        echo '</pre>';
+        exit;
+    }
+}
+if(!function_exists('loger')){
+    function loger($str){
+        if(!SYS_DEBUG_LOG){
+            return '';
+        }
+        $errorStr = '[' . date('Y-m-d H:i:s') . '][LOG] '.$str . PHP_EOL;
+        error_log($errorStr, 3, SYS_PATH.SYS_LOG_PATH . $errorType .date('Y_m_d') . '.log', 'extra');
+    }
+}
+

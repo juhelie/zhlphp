@@ -3,17 +3,25 @@
 // +----------------------------------------------------------------------
 // | Class  核心类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2018
+// | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
+require SYS_ROOT . 'core/BaseException.php';
+
 class Core {
-	
+
+    public $BaseExceptionClass;
+
+    function __construct(){
+        $this->BaseExceptionClass = new BaseException();
+    }
+
 	/**
 	 * @fun  运行程序
 	 */
     function run($controller, $action){
         spl_autoload_register(array($this, 'loadClass')); // 自动加载类
-        $this->setErrorDomain();
+        //$this->setErrorDomain();
         $this->setParamVerifiy();
         $this->setParamGlobals();
         $this->runHook($controller, $action);
@@ -23,7 +31,7 @@ class Core {
 	 * @fun   检测开发环境
 	 */
     private function setErrorDomain(){
-        if(SYS_DEBUG == true){
+        /*if(SYS_DEBUG == true){
             error_reporting(E_ALL); //打开全部错误监视
             ini_set('display_errors','On');  //把错误输出到页面
             ini_set('log_errors', 'On');     //设置错误信息输出到文件
@@ -31,9 +39,9 @@ class Core {
         }else{
             error_reporting(0);
             ini_set('display_errors','Off');
-        }
+        }*/
     }
-	
+
 	/**
 	 * @fun   检测敏感字符
 	 * @desc  
@@ -93,8 +101,7 @@ class Core {
             }
         }
         if(!$existFlag){
-            if(SYS_PAGE404){header("Location: ".HTTP_PATH."404.html");}
-            exit('Error：没有找到相应的类文件'.$v);
+            sysloger('没有找到相应的类文件'.$v, dirname(__FILE__).'/Core.php', __LINE__);
         }
     }
 
@@ -109,10 +116,8 @@ class Core {
             $int = new $controllers($controller, $action);
             $int->$action(); // 直接调取方法
         }else{
-            if(SYS_PAGE404){
-                header("Location: ".HTTP_PATH."404.html");
-            }
-            exit('Error：'.$controller.'/'.$action." non-existent!");
+            sysloger($controller.'/'.$action.'non-existent!', dirname(__FILE__).'/Core.php', __LINE__);
         }
     }
+
 }

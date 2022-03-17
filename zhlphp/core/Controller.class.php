@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | Class  控制器基类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2018
+// | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
 class Controller {
@@ -17,7 +17,7 @@ class Controller {
         $this->_controller = $controller;
         $this->_action = $action;
         $this->_view = new View($controller, $action);
-		$this->fun = new Fun();
+		$this->fun = Fun::getInstance();
     }
 	
 	/**
@@ -35,9 +35,12 @@ class Controller {
 	public function display($template=''){
 		$this->_view->render($template);
 	}
-	
-    function __destruct() {
-        //$this->_view->render();
-    }
+
+    /**
+     * 自动加载模版
+     */
+    /*function __destruct() {
+        $this->_view->render();
+    }*/
  
 }
