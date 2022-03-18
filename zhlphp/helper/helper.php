@@ -144,7 +144,7 @@ if(!function_exists('delCookies')){
  * 运行开销统计
  */
 if(!function_exists('runCosts')){
-	function runCost(){
+	function runCosts(){
 		return array(
 			'times'=>round((microtime(true) - SYS_START_TIME), 3),
 			'ram'=>round((memory_get_usage() - SYS_START_MEMORY) / 1024, 2)

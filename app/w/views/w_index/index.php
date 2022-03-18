@@ -27,7 +27,10 @@
     <div class="title"><?php echo $title;?></div>
     <div class="qrcode"></div>
 </div>
-
+<?php
+$r = runCosts();
+print_r($r);
+?>
 <script type="text/javascript">
 
 </script>
