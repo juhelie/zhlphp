@@ -241,7 +241,7 @@ if(!function_exists('loger')){
             return '';
         }
         $errorStr = '[' . date('Y-m-d H:i:s') . '][LOG] '.$str . PHP_EOL;
-        error_log($errorStr, 3, SYS_PATH.SYS_LOG_PATH . $errorType .date('Y_m_d') . '.log', 'extra');
+        error_log($errorStr, 3, SYS_PATH.SYS_LOG_PATH . 'LOG' .date('Y_m_d') . '.log', 'extra');
     }
 }
 
