@@ -52,7 +52,8 @@ class W_CommModel extends Model {
         $sql['table'] = 'classify';
         $sql['order'] = 'viewseq desc,id asc,createdate asc';
         $sql['where'] = $where;
-        return $this->db[0]->select($sql);
+        $db = $this->conn('mysql1');
+        return $db->select($sql);
     }
 
     /**
@@ -62,20 +63,31 @@ class W_CommModel extends Model {
      */
     function getClassListsV2($id){
         $sql = 'select id,fid,mouldcode,classname,status,nofollow,url,gourl from zhl_classify where id=:id';
-        $stmt = $this->db[1]->prepare($sql);
+        $db = $this->conn('mysql2');
+        $stmt = $db->prepare($sql);
         $stmt->bindValue('id', $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    function getClassListsV3($id){
+        $sql = 'select id,fid,mouldcode,classname,status,nofollow,url,gourl from zhl_classify where id=:id';
+        $db = $this->conn('mysql2');
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue('id', $id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     /**
-     * Notes: 获取导航
+     * Notes: 获取导航Oracle
      * User: ZhuHaili
      * Date: 2019/9/29
      */
-    function getClassListsV3($date){
+    function getClassListsV4($date){
         $sql = "select * from kehudingdan where dingdanshij > to_date(:datestr,'yyyy-mm-dd')";
-        $stmt = $this->db[2]->prepare($sql);
+        $db = $this->conn('oracle');
+        $stmt = $db->prepare($sql);
         $stmt->bindValue('datestr', $date);
         $stmt->execute();
         return $stmt->fetch();

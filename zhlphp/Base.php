@@ -7,7 +7,7 @@
 
 if(substr(PHP_VERSION, 0, 3) < '5.3'){exit("PHP版本过低，必须5.3及以上");}  // PHP运行环境
 date_default_timezone_set('PRC'); //ini_set('date.timezone', 'PRC');
-const SYS_VERSION = '2.3';          // 系统版本
+const SYS_VERSION = '2.3.1';        // 系统版本
 const SYS_WILL_FIX = '.php';        // 自定义类文件扩展名
 const SYS_CLASS_EXT = '.class.php'; // 核心类文件扩展名
 define('SYS_ROOT', __DIR__.'/');    // 核心文件目录（绝对路径）
@@ -41,11 +41,11 @@ if(SYS_URL_BOGUS){
             $WEB_URL = $WEB_URL.SYS_APP_URL_FIX; // 当前连接拼接url后缀
             // 数据提交类型
             if($_SERVER['REQUEST_METHOD'] == 'POST'){
-                echo '<form action="'.$WEB_URL.'" method="post">';
+                /*echo '<form action="'.$WEB_URL.'" method="post">';
                 foreach($_POST as $k=>$v){
                     echo '<input type="hidden" name="'.$k.'" value="'.$v.'">';
                 }
-                echo '</form><script type="text/javascript">document.urlfrom.submit();</script>';
+                echo '</form><script type="text/javascript">document.urlfrom.submit();</script>';*/
             }else{
                 header("Location: $WEB_URL");
             }
@@ -58,34 +58,38 @@ if(SYS_URL_BOGUS){
 }
 
 // 当前访问的url
-defined('SYS_WEB_URL') or define('SYS_WEB_URL', $WEB_URL);
+define('SYS_WEB_URL', $WEB_URL);
 
 /**
  * url解析分配路由
  */
-$URL_PARAM_ARR = explode("/",$URL_PARAM);
-$mouldArr = explode("_",$URL_PARAM_ARR[0]);
 $appMould = SYS_APP_DEFAULT;
+$URL_PARAM_ARR = explode("/", $URL_PARAM);
+$mouldArr = explode("_", $URL_PARAM_ARR[0]);
 if(count($mouldArr) >= 2){
-    $validM = SYS_PATH.SYS_APP_PATH.'/'.$mouldArr[0];
+    $validM = SYS_PATH . SYS_APP_PATH . '/' . $mouldArr[0];
     if(is_dir($validM)){
         $appMould = $mouldArr[0];
         array_shift($mouldArr);
     }
 }
-$mouldArr[0] = $mouldArr[0] ? $mouldArr[0] : 'index';
 // 定义功能模块
-defined('SYS_PRO_PATH') or define('SYS_PRO_PATH', $appMould);
-// 获取控制器
+define('SYS_PRO_PATH', $appMould);
+// 模版绝对路径常量
+define('SYS_VIEWS', SYS_PATH.SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/');
+// 域名时可能没有则默认index控制器
+$mouldArr[0] = $mouldArr[0] ? $mouldArr[0] : 'index';
+// 获取控制器(完整控制器名)
 $controller = ucfirst($appMould).'_'.ucfirst($mouldArr[0]);
-// 删除数组中的控制器名
-array_shift($mouldArr);
 // 获取方法名
-$action = isset($mouldArr[0]) && $mouldArr[0] ? $mouldArr[0] : 'index';
+$action = isset($mouldArr[1]) && $mouldArr[1] ? $mouldArr[1] : 'index';
 // 删除方法，剩下的为参数
 array_shift($URL_PARAM_ARR);
+
 // 获取URL参数键值混合数组
 if(!empty($URL_PARAM_ARR)){
+    // 为安全初始化参数
+    $_GET = $_REQUEST = array();
     // 匹配参数键值对
     foreach($URL_PARAM_ARR as $k=>$v){
         if($k%2 == 0){
@@ -109,15 +113,14 @@ define('SYS_START_TIME',  microtime(true)); // 系统运行起始时间
 require SYS_ROOT . 'plug/service.php';     // 自定义核心扩展服务文件
 
 // 包含项目配置文件
-if(file_exists(SYS_PATH . 'config/config.php')){
+if(is_file(SYS_PATH . 'config/config.php')){
     $GLOBALS['SYS'] = require SYS_PATH . 'config/config.php';;
 }
 
 // 包含核心框架类
-if(!file_exists(SYS_ROOT.'core/Core.php')){
+if(!is_file(SYS_ROOT.'core/Core.php')){
     exit('Error: Warning！Base!');
 }
-
 require SYS_ROOT.'core/Core.php';
 // 实例化核心类
 $core = new Core;

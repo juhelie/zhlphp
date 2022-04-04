@@ -6,22 +6,16 @@
 // | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
-require SYS_ROOT . 'core/BaseException.php';
-
 class Core {
 
     public $BaseExceptionClass;
-
-    function __construct(){
-        $this->BaseExceptionClass = new BaseException();
-    }
 
 	/**
 	 * @fun  运行程序
 	 */
     function run($controller, $action){
         spl_autoload_register(array($this, 'loadClass')); // 自动加载类
-        //$this->setErrorDomain();
+        $this->setErrorDomain();
         $this->setParamVerifiy();
         $this->setParamGlobals();
         $this->runHook($controller, $action);
@@ -31,6 +25,7 @@ class Core {
 	 * @fun   检测开发环境
 	 */
     private function setErrorDomain(){
+        $this->BaseExceptionClass = new BaseException();
         /*if(SYS_DEBUG == true){
             error_reporting(E_ALL); //打开全部错误监视
             ini_set('display_errors','On');  //把错误输出到页面

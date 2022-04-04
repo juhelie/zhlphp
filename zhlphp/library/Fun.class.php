@@ -34,18 +34,19 @@ class Fun {
      * @hint  默认,s=字符串
      * @desc  $type:d=数字,b=布尔型,f=小数,h=html标签,s=字符串;$leng:截取长度,$type为小数时代表小数点后;$start:截取字符串时开始位置
      */
-    public function input($name='', $type='s', $leng=0, $start=0){
+    public function input($name='', $val = null, $type='s', $leng=0, $start=0){
         if(!isset($_REQUEST)){
-            return null;
+            return $val;
         }
-	    $var = $_REQUEST;
+	    $default = $_REQUEST;
         if($name){
             if(!isset($_REQUEST[$name])){
-                return null;
+                return $val;
             }
-	        $var = $_REQUEST[$name];
+	        $default = $_REQUEST[$name];
         }
-        return $this->varArr($var, $type, $leng, $start);
+        $default = $default ? $default : $val;
+        return $this->varArr($default, $type, $leng, $start);
     }
 
     /**
@@ -68,7 +69,7 @@ class Fun {
      */
     public function varStr($var, $type, $leng, $start){
         if(!$var){
-            return null;
+            return $var;
         }
         if($type == 'd'){           // 整形
             $value = intval($var);
@@ -132,14 +133,17 @@ class Fun {
     /**
      * @fun 数组转json
      */
-    public function json($arr){
+    public function json($arr, $echo = false){
         $json = json_encode($arr,320);
         $jsonErr = json_last_error();
         if($jsonErr){
             sysloger('json_encode(),Error:'.$jsonErr,dirname(__FILE__).'/Fun.class.php',__LINE__);
-            return '';
         }
-        return $json;
+        if($echo){
+            echo $json; exit;
+        }else{
+            return $json;
+        }
     }
 
     /**
@@ -150,7 +154,6 @@ class Fun {
         $jsonErr = json_last_error();
         if($jsonErr){
             sysloger('json_decode(),Error:'.$jsonErr,dirname(__FILE__).'/Fun.class.php',__LINE__);
-            return array();
         }
         return $arr;
     }

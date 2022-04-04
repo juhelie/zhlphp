@@ -172,7 +172,7 @@ if(!function_exists('redirect')){
  * js提示跳转
  */
 if(!function_exists('jump')){
-	function jump($txt = '提示', $url=''){
+	function jump($txt = '提示', $url = ''){
 		$txt = strval($txt);
 		if($url){
             $httpType = '';
@@ -205,18 +205,19 @@ if(!function_exists('sysloger')){
     function sysloger($str, $errorFile='', $errorLine='0'){
         $errorStr = '[' . date('Y-m-d H:i:s') . '][SYS] '.$str.' in '.$errorFile.' on line '.$errorLine . PHP_EOL;
         if(SYS_DEBUG_LOG){
-            error_log($errorStr, 3, SYS_LOG_PATH . 'SYS' .date('Y_m_d') . '.log', 'extra');
+            error_log($errorStr, 3, SYS_PATH.SYS_ERR_PATH . 'SYS' .date('Y_m_d') . '.log', 'extra');
         }
         if(SYS_PAGE404){
             header("Location: ".HTTP_PATH."404.html");
         }else if(SYS_DEBUG){
             exit($errorStr);
         }
+        exit;
     }
 }
 
 /**
- * loger
+ * 程序日志 print_r
  */
 if(!function_exists('loger_r')) {
     function loger_r($s){
@@ -227,6 +228,9 @@ if(!function_exists('loger_r')) {
     }
 }
 
+/**
+ * 程序日志 var_dump
+ */
 if(!function_exists('loger_d')) {
     function loger_d($s){
         echo '<pre>';
@@ -235,13 +239,17 @@ if(!function_exists('loger_d')) {
         exit;
     }
 }
+
+/**
+ * 程序日志
+ */
 if(!function_exists('loger')){
     function loger($str){
-        if(!SYS_DEBUG_LOG){
+        if(!SYS_FLAG_LOG){
             return '';
         }
+        is_array($str) && $str = print_r($str,true); //print_r 增加 true 返回打印字符窜
         $errorStr = '[' . date('Y-m-d H:i:s') . '][LOG] '.$str . PHP_EOL;
         error_log($errorStr, 3, SYS_PATH.SYS_LOG_PATH . 'LOG' .date('Y_m_d') . '.log', 'extra');
     }
 }
-

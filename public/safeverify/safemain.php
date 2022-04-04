@@ -1,6 +1,6 @@
 <?php
 include 'safeban.php';
-$safeVerifyResult = safeVerifyExecute(5,1000, 300000); // 连续5次/1秒内/不验证时5分钟失效
+$safeVerifyResult = safeVerifyExecute(10,1000, 300000); // 连续10次/1秒内/不验证时5分钟失效
 // loger($safeVerifyResult);
 if($safeVerifyResult['code'] == 10000){
     $token = $safeVerifyResult['token'];

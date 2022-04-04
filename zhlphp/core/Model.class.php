@@ -5,50 +5,24 @@
 // | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
-require_once SYS_ROOT.'library/MySqls.php';
-require_once SYS_ROOT.'library/MysqlPDO.php';
-require_once SYS_ROOT.'library/OraclePDO.php';
-
-class Model  {
+class Model{
     protected $fun;
     protected $db;
+    protected $dbConfig;
+
+    /**
+     * Model constructor.
+     */
     function __construct() {
         // 传参处理
         $this->fun = Fun::getInstance();
-        /** 连接数据库 **/
+        /** 数据库配置信息 **/
         // 包含数据库配置文件
         $databaseFile = SYS_PATH.'config/database.php';
-        if(file_exists($databaseFile)){
+        if(is_file($databaseFile)){
             $db_Con = require $databaseFile;
-            // 数据库文件参数不为空
             if(!empty($db_Con)){
-                // 多数据循环配置
-                $dbs = array();
-                foreach($db_Con as $dbKey=>$dbConfig){
-                    // 检测数据库设置参数
-                    $dbError = $this->dbSignParam($dbConfig);
-                    if(!$dbError){
-                        // 分配数据库
-                        if($dbConfig['db_type'] == 'mysql'){
-                            // mysql分配连接类型
-                            if($dbConfig['db_link'] == 'mysqli'){
-                                $db = MySqls::getInstance($dbConfig);
-                                $dbs[$dbKey] = $db;
-                                //$this->$dbAttr = $db;
-                            }else if($dbConfig['db_link'] == 'pdo') {
-                                $db = MysqlPDO::getInstance($dbConfig);
-                                //$this->$dbAttr = $db->db;
-                                $dbs[$dbKey] = $db->db;
-                            }
-                        }else if($dbConfig['db_type'] == 'oracle'){
-                            // oracle
-                            $db = OraclePDO::getInstance($dbConfig);
-                            //$this->$dbAttr = $db->db;
-                            $dbs[$dbKey] = $db->db;
-                        }
-                    }
-                }
-                $this->db = $dbs;
+                $this->dbConfig = $db_Con;
             }
         }
     }
@@ -61,14 +35,49 @@ class Model  {
     private function dbSignParam($dbParam){
         $mustParam = array('db_type','db_link','db_host','db_port',
             'db_name','db_user','db_pwd','db_fix','db_char');
+        $errStr = '';
         foreach($mustParam as $v){
             if(!isset($dbParam[$v])){
-                sysloger('Database parameter error:'.$v,'config/database.php','');
-                return $v;
+                $errStr .= $v.',';
             }
         }
+        return $errStr;
     }
 
+    /**
+     * Notes:连接指定数据库
+     * User: ZhuHaili
+     */
+    public function conn($dbKey){
+        // 判断指定的数据库
+        if(!isset($this->dbConfig[$dbKey])){
+            sysloger('Database parameter error:'.$dbKey,'core/Model.class.php',__LINE__);
+        }
+        // 验证指定的数据库配置参数合法性
+        $dbError = $this->dbSignParam($this->dbConfig[$dbKey]);
+        if($dbError){
+            sysloger('Database parameter error:'.$dbError,'config/database.php / core/Model.class.php',__LINE__);
+        }
+        $dbKeyParam = $this->dbConfig[$dbKey];
+        $dbType = $dbKeyParam['db_type']; // 数据库类型
+        $dbLink = $dbKeyParam['db_link']; // 链接类型
+        if($dbType == 'mysql'){
+            if($dbLink == 'mysqli'){
+                $this->db = DbMySqli::getInstance($dbKeyParam);
+            }else if($dbLink == 'pdo'){
+                $db = DbMysqlPDO::getInstance($dbKeyParam);
+                $this->db = $db->db;
+            }
+        }else if($dbType == 'oracle'){
+            $db = DbOraclePDO::getInstance($dbKeyParam);
+            $this->db = $db->db;
+        }
+        return $this->db;
+    }
+
+    /**
+     * 析构方法
+     */
     /*function __destruct() {
 		
     }*/

@@ -30,12 +30,19 @@ class View {
 	 * @fun   显示视图
 	 * @desc  
 	 */
-    function render($template) {
-        extract($this->var); //从数组中将变量导入到当前的符号表。
-		$controller = strtolower($this->_controller);
-		$action = strtolower($this->_action);
+    /**
+     * @fun   显示视图
+     * @desc
+     */
+    function render($template, $flag) {
+        //从数组中将变量导入到当前的符号表。
+        extract($this->var);
 
-        // 视图指定模版时
+        // 默认模版
+        $controller = strtolower($this->_controller);
+        $action = strtolower($this->_action);
+
+        // 视图指定模版时覆盖默认模版，最多两层（允许当前控制器下模版和跨控制器模版不允许映射到其他模块下的模版）
         if($template){
             $actionArr = explode('/',$template);
             $action = $actionArr[0];
@@ -45,33 +52,50 @@ class View {
             }
         }
 
-        $defaultHeader = SYS_PATH.SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/header.php';
-        $defaultFooter = SYS_PATH.SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/footer.php';
-        $controllerHeader = SYS_PATH.SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/'.$controller.'/header.php';
-        $controllerFooter = SYS_PATH.SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/'.$controller.'/footer.php';
-
-        // 页头文件包含（控制器存在页头覆盖外层页头）
-        if(file_exists($controllerHeader)){
-            include ($controllerHeader);
-        }else{
-            if(file_exists($defaultHeader)){
-                include ($defaultHeader);
+        /*if($flag){
+            $defaultHeader = APP_PATH.SYS_APP.'/'.PRO_PATH.'views/header.php';
+            $defaultFooter = APP_PATH.SYS_APP.'/'.PRO_PATH.'views/footer.php';
+            $controllerHeader = APP_PATH.SYS_APP.'/'.PRO_PATH.'views/'.$controller.'/header.php';
+            $controllerFooter = APP_PATH.SYS_APP.'/'.PRO_PATH.'views/'.$controller.'/footer.php';
+            // 页头文件包含（控制器存在页头覆盖外层页头）
+            if(file_exists($controllerHeader)){
+                include ($controllerHeader);
+            }else{
+                if(file_exists($defaultHeader)){
+                    include ($defaultHeader);
+                }
             }
-        }
+        }*/
+
         // 页面内容文件
-		$contentPage = SYS_PATH.SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/'.$controller.'/'.$action.'.php';
-		if(file_exists($contentPage)){
-			include (SYS_PATH . SYS_APP_PATH.'/'.SYS_PRO_PATH.'/views/'.$controller.'/'.$action.'.php');
-		}else{
-            sysloger('error : 没有找到'.SYS_PRO_PATH.'/'.$controller.'/'.$action.'.php 视图文件', 'Core.php', __LINE__);
-		}
-        // 页脚文件（控制器存在页脚覆盖外层页脚）
-        if(file_exists($controllerFooter)){
-            include ($controllerFooter);
+        $contentPagePath = SYS_VIEWS.$controller.'/'.$action.'.phtml';
+        if(file_exists($contentPagePath)){
+            $content = $contentPagePath;
         }else{
-			if(file_exists($defaultFooter)){
-				include ($defaultFooter);
-			}
+            exit('error : 没有找到'.$contentPagePath);
         }
+
+        if($flag){
+            $commonHtml = SYS_VIEWS.'common.phtml';
+            $commonHtmlIn = SYS_VIEWS . $controller . '/common.phtml';
+            if(file_exists($commonHtmlIn)) {
+                include $commonHtmlIn;
+            }else if(file_exists($commonHtml)){
+                include $commonHtml;
+            }
+        }else{
+            include $content;
+        }
+
+        // 页脚文件（控制器存在页脚覆盖外层页脚）
+        /*if($flag){
+            if(file_exists($controllerFooter)){
+                include ($controllerFooter);
+            }else{
+                if(file_exists($defaultFooter)){
+                    include ($defaultFooter);
+                }
+            }
+        }*/
     }
 }

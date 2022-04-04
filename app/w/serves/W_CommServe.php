@@ -23,9 +23,15 @@ class W_CommServe extends Model {
         return $commM->getClassListsV2($id);
     }
 
-    // 数据库3_oracle_pdo
+    // 数据库2_pdo
     function getClassListsV3($date){
         $commM = new W_CommModel();
         return $commM->getClassListsV3($date);
+    }
+
+    // 数据库4_oracle_pdo
+    function getClassListsV4($date){
+        $commM = new W_CommModel();
+        return $commM->getClassListsV4($date);
     }
 }

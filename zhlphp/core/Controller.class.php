@@ -27,14 +27,22 @@ class Controller {
     function set($name, $value) {
         $this->_view->set($name, $value);
     }
-	
-	/**
-	 * @fun   加载模版
-	 * @desc  
-	 */
-	public function display($template=''){
-		$this->_view->render($template);
-	}
+
+    /**
+     * @fun   加载模版
+     * @desc
+     */
+    public function display($template=''){
+        $this->_view->render($template, false);
+    }
+
+    /**
+     * @fun   加载模版
+     * @desc  包含公共文件
+     */
+    public function displays($template=''){
+        $this->_view->render($template, true);
+    }
 
     /**
      * 自动加载模版

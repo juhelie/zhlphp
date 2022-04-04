@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 
 return array(
-    array(
+    'mysql1'=>array(
         'db_type' => 'mysql',
         'db_link' => 'mysqli',
         'db_host' => '127.0.0.1',
@@ -17,7 +17,7 @@ return array(
         'db_fix' => 'zhl_',
         'db_char' => 'utf8',
     ),
-    array(
+    'mysql2'=>array(
         'db_type' => 'mysql',
         'db_link' => 'pdo',
         'db_host' => '127.0.0.1',
@@ -28,7 +28,7 @@ return array(
         'db_fix' => 'zhl_',
         'db_char' => 'utf8',
     ),
-    /*array(
+    /*'oracle'=>array(
         'db_type' => 'oracle',
         'db_link' => 'oci',
         'db_host' => '***.***.***.***',

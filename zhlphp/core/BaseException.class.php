@@ -6,15 +6,21 @@
 // | Copyright (c) 2022
 // +----------------------------------------------------------------------
 
+defined('SYS_PATH') or define('SYS_PATH', dirname($_SERVER['SCRIPT_FILENAME']).'/');    // 项目根目录(绝对路径)
 defined('SYS_DEBUG') or define('SYS_DEBUG', true);                      // 调试开关
 defined('SYS_DEBUG_LOG') or define('SYS_DEBUG_LOG', true);              // 系统日志开关
 defined('SYS_PAGE404') or define('SYS_PAGE404', false);                 // 404开关
-defined('SYS_LOG_PATH') or define('SYS_LOG_PATH', 'runtime/logs/');   // 日志打印文件路径
+defined('SYS_ERR_PATH') or define('SYS_ERR_PATH', 'runtime/error/');   // 日志打印文件路径
 
 class BaseException extends Exception{
 
     function __construct(){
-        error_reporting(0); //禁止错误输出
+        error_reporting(E_ALL); //打开全部错误监视
+        ini_set('display_errors','Off');  //把错误输出到页面
+        ini_set('log_errors', 'On');     //设置错误信息输出到文件
+        ini_set("error_log", SYS_PATH.'runtime/error/error.log'); //指定错误日志文件名，只要路径正确即可
+
+        //error_reporting(0); //禁止错误输出
         // 设置一个用户定义的错误处理函数
         set_error_handler(array($this, '_error_handler'));
         //定义PHP程序执行完成后执行的函数
@@ -51,7 +57,7 @@ class BaseException extends Exception{
         //写入错误日志
         //格式 ：  时间 uri | 错误消息 文件位置 第几行
         if(SYS_DEBUG_LOG){
-            error_log($errorStr, 3, SYS_PATH.SYS_LOG_PATH . 'SYS'. date('Y_m_d') . '.log', 'extra');
+            error_log($errorStr, 3, SYS_PATH.SYS_ERR_PATH . 'SYS'. date('Y_m_d') . '.log', 'extra');
         }
         if(SYS_PAGE404){
             header("Location: ".HTTP_PATH."404.html");

@@ -5,11 +5,17 @@
 // | Copyright (c) 2020
 // +----------------------------------------------------------------------
 
-class MySqls {
+defined('SYS_PATH') or define('SYS_PATH', dirname($_SERVER['SCRIPT_FILENAME']).'/');    // 项目根目录(绝对路径)
+defined('SYS_DEBUG') or define('SYS_DEBUG', true);                      // 调试开关
+defined('SYS_DEBUG_LOG') or define('SYS_DEBUG_LOG', true);              // 系统日志开关
+defined('SYS_ERR_PATH') or define('SYS_ERR_PATH', 'runtime/error/');   // 日志打印文件路径
+
+class DbMySqli {
 
     private $_dbCon;
     private $_result;
     private $_tableFix;
+    private $_sql;
 
     //定义静态变量保存当前类的实例
     private static $instance;
@@ -42,7 +48,14 @@ class MySqls {
         try {
             $this->_dbCon = mysqli_connect($address, $account, $pwd, $dbname, $port);
         } catch (mysqli_sql_exception $e) {
-            sysloger($e->getMessage(), dirname(__FILE__).'/MySqls.php', __LINE__);
+            /*$errorStr = '[' . date('Y-m-d H:i:s') . '][SYS] ' . dirname(__FILE__) . (__CLASS__) . ($e->getMessage()) . PHP_EOL;
+            if(SYS_DEBUG_LOG){
+                error_log($errorStr, 3, SYS_PATH . SYS_ERR_PATH . 'SYS'. date('Y_m_d') . '.log', 'extra');
+            }
+            if(SYS_DEBUG){
+                echo "$errorStr<br>";
+            }
+            exit;*/
         }
 
         if(!$this->_dbCon){
@@ -180,7 +193,7 @@ class MySqls {
 	 * @desc  
 	 */
 	private function startEnd($params){
-		$limitArr = array('start'=>0,'end'=>10);
+		$limitArr = array();
 		if(isset($params['limit']) && !empty($params['limit'])){
 			$limits = explode(',',$params['limit']);
 			$limitArr['start'] = '0';
@@ -257,20 +270,15 @@ class MySqls {
      * User: ZhuHaili
      * Date: 2020/10/10
      */
-	private function deBugLog($logParam){
-	    if($logParam['flag'] == 'sql'){
-            unset($logParam['flag']);
-            foreach($logParam as $v){
-                loger($v);
-            }
-        }
+	private function deBugLog($sql){
+	    $this->_sql = $sql;
     }
 
 	/**
 	 * @fun   查询单条
 	 * @desc  
 	 */
-    function find($params,$deBugFlag = ''){
+    function find($params){
 		$sqlArr = $this->sqlSet($params);
 		$w = $this->whereTo($params);
         $f = $this->whereFun($params);
@@ -278,10 +286,7 @@ class MySqls {
 		$sql = 'select '.$sqlArr['field'].' from '.$sqlArr['table'].' '.$sqlArr['as'].' ';
 		$sql .= $sqlArr['leftJoin'].' '.$sqlArr['rightJoin'].' '.$sqlArr['innerJoin'].' ';
 		$sql .= ' where 1=1 '.$w.' '.$f.' '.$o;
-        $logParam['flag'] = $deBugFlag;
-        $logParam['from'] = 'From：find';
-        $logParam['sql'] = $sql;
-        $this->deBugLog($logParam);
+        $this->deBugLog($sql);
 		return $this->query($sql,1,true);
     }
 	
@@ -289,7 +294,7 @@ class MySqls {
 	 * @fun   查询-默认查询
 	 * @desc  支持limit分页
 	 */
-    function select($params = array(),$deBugFlag = ''){
+    function select($params = array()){
 		$sqlArr = $this->sqlSet($params);
 		$w = $this->whereTo($params);
 		$f = $this->whereFun($params);
@@ -299,10 +304,7 @@ class MySqls {
 		$sql = 'select '.$sqlArr['field'].' from '.$sqlArr['table'].' '.$sqlArr['as'].' ';
 		$sql .= $sqlArr['leftJoin'].' '.$sqlArr['rightJoin'].' '.$sqlArr['innerJoin'].' ';
 		$sql .= ' where 1=1 '.$w.' '.$f.' '.$g.' '.$o.' '.$l;
-        $logParam['flag'] = $deBugFlag;
-        $logParam['from'] = 'From：select';
-        $logParam['sql'] = $sql;
-        $this->deBugLog($logParam);
+        $this->deBugLog($sql);
 		return $this->query($sql,1);
     }
 	
@@ -310,7 +312,7 @@ class MySqls {
 	 * @fun   查询-起止分页
 	 * @desc  支持起始分页
 	 */
-    function findAll($params,$deBugFlag = ''){
+    function findAll($params){
 		$sqlArr = $this->sqlSet($params);
 		$w = $this->whereTo($params);
         $f = $this->whereFun($params);
@@ -323,16 +325,13 @@ class MySqls {
 			$start = $l['start'];
 			$end = $l['end'];
 			$sqlStart = "select view_t1.* from ( select @rowno:=@rowno+1 as R, ymd_t.* from ( ";
-			$sqlEnd .= ") ymd_t ) view_t1 where view_t1.r>$start and view_t1.r<=$end";
+			$sqlEnd = ") ymd_t ) view_t1 where view_t1.r>$start and view_t1.r<=$end";
 		}
 		$sqlContent = 'select @rowno:=0,'.$sqlArr['field'].' from '.$sqlArr['table'].' '.$sqlArr['as'].' ';
 		$sqlContent .= $sqlArr['leftJoin'].' '.$sqlArr['rightJoin'].' '.$sqlArr['innerJoin'].' ';
 		$sqlContent .= ' where 1=1 '.$w.' '.$f.' '.$g.' '.$o;
 		$sql = $sqlStart.$sqlContent.$sqlEnd;
-        $logParam['flag'] = $deBugFlag;
-        $logParam['from'] = 'From：findAll';
-        $logParam['sql'] = $sql;
-        $this->deBugLog($logParam);
+        $this->deBugLog($sql);
 		return $this->query($sql,1);
     }
 	
@@ -340,7 +339,7 @@ class MySqls {
 	 * @fun   新增
 	 * @desc  条件必须
 	 */
-	function add($params,$deBugFlag = ''){
+	function add($params){
 		$table = $this->setTable($params);
 		$data  = $this->setData($params);
 		$field = '';
@@ -356,10 +355,7 @@ class MySqls {
 			$value = rtrim($value, ',');
 			if($field && $value){
 				$sql = "insert into $table ($field) values ($value)";
-                $logParam['flag'] = $deBugFlag;
-                $logParam['from'] = 'From：add';
-                $logParam['sql'] = $sql;
-                $this->deBugLog($logParam);
+                $this->deBugLog($sql);
 				return $this->query($sql,2);
 			}
 		}
@@ -370,7 +366,7 @@ class MySqls {
 	 * @fun   修改
 	 * @desc  
 	 */
-	function update($params,$deBugFlag = ''){
+	function update($params){
 		$table = $this->setTable($params);
 		$data  = $this->setData($params);
 		$where = $this->whereTo($params);
@@ -386,10 +382,7 @@ class MySqls {
 			
 			if($where){
 				$sql = "update $table set $set where 1=1 $where";
-                $logParam['flag'] = $deBugFlag;
-                $logParam['from'] = 'From：update';
-                $logParam['sql'] = $sql;
-                $this->deBugLog($logParam);
+                $this->deBugLog($sql);
 				return $this->query($sql,2);
 			}
 		}
@@ -400,15 +393,12 @@ class MySqls {
 	 * @fun   删除
 	 * @desc  条件必须
 	 */
-    function del($params,$deBugFlag = ''){
+    function del($params){
 		$table = $this->setTable($params);
 		$w = $this->whereTo($params);
 		if($w){
             $sql = "delete from $table where 1=1 $w";
-            $logParam['flag'] = $deBugFlag;
-            $logParam['from'] = 'From：del';
-            $logParam['sql'] = $sql;
-            $this->deBugLog($logParam);
+            $this->deBugLog($sql);
 			return $this->query($sql,2);
 		}
 		return false;
