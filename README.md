@@ -68,7 +68,7 @@ README.md  ------------------------------ 说明文档
 ### 三、运行     
 #### 1、框架运行流程      
 >* index.php -> /zhlphp/Base.php -> /zhlphp/core/Core.php -> {控制器C} -> {服务层S} -> {模型M} -> {视图V}
-#### 2、url结构组成和解析        
+#### 2、URL结构组成和解析        
 >* {网站根域名}/web_about_index/cid/1/id/2.html   
 >  web:为功能模块(框架配置默认模块时可以为空)，  
 >  about:为控制器(index时可以为空)，  
@@ -252,4 +252,6 @@ README.md  ------------------------------ 说明文档
 >* loger($str)：程序打印日志文件(runtime/logs/)  
 >* loger_r($str)：程序日志输出到页面(美化print_r)  
 >* loger_d($str)：程序日志输出到页面(美化var_dump)  
+
+--- End ---
 ---
