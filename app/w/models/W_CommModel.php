@@ -71,8 +71,8 @@ class W_CommModel extends Model {
     }
 
     function getClassListsV3($id){
-        $sql = 'select id,fid,mouldcode,classname,status,nofollow,url,gourl from zhl_classify where id=:id';
         $db = $this->conn('mysql2');
+        $sql = 'select id,fid,mouldcode,classname,status,nofollow,url,gourl from '.$this->db_fix.'classify where id=:id';
         $stmt = $db->prepare($sql);
         $stmt->bindValue('id', $id);
         $stmt->execute();

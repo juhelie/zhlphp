@@ -12,7 +12,7 @@ defined('SYS_ERR_PATH') or define('SYS_ERR_PATH', 'runtime/error/');   // 日志
 
 class DbOraclePDO{
     public $db;
-    
+    public $db_fix;
     //定义静态变量保存当前类的实例
     private static $instance;
 
@@ -22,6 +22,7 @@ class DbOraclePDO{
         $HOST_NAME .= ';charset='.$config['db_char'];
         $HOST_USER = $config['db_user'];
         $HOST_PWD = $config['db_pwd'];
+        $this->db_fix = $config['db_fix'];
         try{
             $conn = new \PDO($HOST_NAME, $HOST_USER, $HOST_PWD);
             //$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

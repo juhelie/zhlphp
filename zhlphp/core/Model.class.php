@@ -61,16 +61,19 @@ class Model{
         $dbKeyParam = $this->dbConfig[$dbKey];
         $dbType = $dbKeyParam['db_type']; // 数据库类型
         $dbLink = $dbKeyParam['db_link']; // 链接类型
+        $this->db_fix = $dbKeyParam['db_fix']; // 表前缀
         if($dbType == 'mysql'){
             if($dbLink == 'mysqli'){
                 $this->db = DbMySqli::getInstance($dbKeyParam);
             }else if($dbLink == 'pdo'){
                 $db = DbMysqlPDO::getInstance($dbKeyParam);
                 $this->db = $db->db;
+                $this->db->db_fix = $db->db_fix;
             }
         }else if($dbType == 'oracle'){
             $db = DbOraclePDO::getInstance($dbKeyParam);
             $this->db = $db->db;
+            $this->db->db_fix = $db->db_fix;
         }
         return $this->db;
     }

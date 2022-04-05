@@ -162,8 +162,8 @@ README.md  ------------------------------ 说明文档
 >* 详细参考PHP:PDO官方文档，以下列举常用到的：  
 >```
 >// 单条
->$sql = 'select id,fid,classname,status from zhl_classify where id=:id';
 >$db = $this->conn('mysql2'); // config/database.php 配置的自定义数据库昵称
+>$sql = 'select id,fid,classname,status from '.$db->db_fix.'_classify where id=:id';
 >$stmt = $db->prepare($sql);
 >$stmt->bindValue('id', $id);
 >$stmt->execute();

@@ -14,15 +14,15 @@ class DbMySqli {
 
     private $_dbCon;
     private $_result;
-    private $_tableFix;
     private $_sql;
+    public $db_fix;
 
     //定义静态变量保存当前类的实例
     private static $instance;
 
     //防止在外部实例化
     private function __construct($config){
-        $this->_tableFix = $config['db_fix'];
+        $this->db_fix = $config['db_fix'];
         $this->connect($config['db_host'], $config['db_user'], $config['db_pwd'], $config['db_name'], $config['db_port'], $config['db_char']);
     }
 
@@ -214,7 +214,7 @@ class DbMySqli {
 	private function setTable($params){
 		//$table = $this->_table;
 		if(isset($params['table']) && $params['table']){
-			$table = $this->sqlVal(strtolower($this->_tableFix.$params['table']));
+			$table = $this->sqlVal(strtolower($this->db_fix.$params['table']));
 		}
 		return $table;
 	}
@@ -236,19 +236,19 @@ class DbMySqli {
 		$sqlArr['leftJoin'] = '';
 		if(isset($params['leftjoin']) && $params['leftjoin']){
 			foreach($params['leftjoin'] as $k=>$v){
-				$sqlArr['leftJoin'] .= ' left join '.$this->_tableFix.$k.' '.$this->sqlVal(strtolower($v));
+				$sqlArr['leftJoin'] .= ' left join '.$this->db_fix.$k.' '.$this->sqlVal(strtolower($v));
 			}
 		}
 		$sqlArr['rightJoin'] = '';
 		if(isset($params['rightjoin']) && $params['rightjoin']){
 			foreach($params['rightjoin'] as $k=>$v){
-				$sqlArr['rightJoin'] .= ' right join '.$this->_tableFix.$k.' '.$this->sqlVal(strtolower($v));
+				$sqlArr['rightJoin'] .= ' right join '.$this->db_fix.$k.' '.$this->sqlVal(strtolower($v));
 			}
 		}
 		$sqlArr['innerJoin'] = '';
 		if(isset($params['innerjoin']) && $params['innerjoin']){
 			foreach($params['innerjoin'] as $k=>$v){
-				$sqlArr['innerJoin'] .= ' inner join '.$this->_tableFix.$k.' '.$this->sqlVal(strtolower($v));
+				$sqlArr['innerJoin'] .= ' inner join '.$this->db_fix.$k.' '.$this->sqlVal(strtolower($v));
 			}
 		}
 		return $sqlArr;
