@@ -292,6 +292,7 @@ README.md  ------------------------------ 说明文档
 >>return $stmt->rowCount() > 0;
 >// 获取刚插入的行数据主键ID
 >$stmt->lastInsertId();
+>// 注：$db->db_fix可以获取表前缀
 >```
 
 #### 8、视图 View（页面模版文件）  
@@ -320,10 +321,10 @@ README.md  ------------------------------ 说明文档
 
 ### 四、扩展   
 #### 1、自定义方法
-> /extend/function.php 可以自定义方法。  
+> /extend/function.php 可以自定义方法(哪个文件使用这里的方法需要引入该文件例如：include SYS_PATH.'extend/function.php';)。  
 
 #### 2、扩展第三方类库
-> 第三方类库直接放入 /extend/ 文件夹下，类库名和文件名必须要一致。
+> 第三方类库直接放入 /extend/ 文件夹下，类库名和文件名必须要一致（使用时直接new类不许引入系统会自动引入加载new对应的类）。
  
 #### 3、全局常量
 > (1)、固定常量：  
@@ -351,7 +352,7 @@ README.md  ------------------------------ 说明文档
 >* SYS_ERR_PATH：系统错误日志目录   
 
 #### 4、系统辅助类 
-> 核心目录下/helper/helper.php (可扩展)：  
+> 核心目录下/helper/helper.php (自定义方法可以扩展)：  
 >* cookiesCount($kname, $kcount)：客户端操作次数限制   
 >* sys_encrypt($string, $key)：字符串-加密  
 >* sys_decrypt($string, $key)：字符串-解密   
