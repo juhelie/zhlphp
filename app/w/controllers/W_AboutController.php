@@ -12,7 +12,9 @@ class W_AboutController extends Controller {
         $list1 = $commSer->getClassLists($id);
         $list2 = $commSer->getClassListsV2($id);
         $list3 = $commSer->getClassListsV3($id);
-        $this->fun->json($list1,true);exit;
+        $r = runCosts();
+        array_push($list1, $r);
+        $this->fun->json($list1,true);
         //loger('1111111111');
         //$list4 = $commSer->getClassListsV3('2022-01-01');
         echo '<pre>';
