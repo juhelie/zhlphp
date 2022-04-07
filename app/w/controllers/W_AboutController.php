@@ -32,6 +32,20 @@ class W_AboutController extends Controller {
      * User: ZhuHaili
      */
     function body(){
+        $list = array(
+            array(
+                'id'=>'1',
+                'title'=>'开源框架',
+                'desc'=>'易上手的框架',
+            ),
+            array(
+                'id'=>'2',
+                'title'=>'开源框架222',
+                'desc'=>'易上手的框架22',
+            )
+        );
+        $this->set('title','sdfsfsdfdsfsfd');
+        $this->set('list', $list);
         $this->display(); // 默认使用w_about/body.php文件
     }
 

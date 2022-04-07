@@ -199,6 +199,15 @@ if(!function_exists('sysUrlFix')){
 }
 
 /**
+ * 模版内加载模版路径辅助
+ */
+if(!function_exists('sysTmplFix')){
+    function sysTmplFix($tmpl){
+        return include SYS_VIEWS.$tmpl.SYS_TMPL_FIX;
+    }
+}
+
+/**
  * 系统日志
  */
 if(!function_exists('sysloger')){

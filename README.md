@@ -308,15 +308,24 @@ README.md  ------------------------------ 说明文档
 >foreach($list as $v){
 >   echo $v.'<br>';
 >}
+>// 或者使用定界符
+>foreach($list as $v){
+>   $title = $v['title'];
+>   echo <<<EOF
+>   <div>$title</div>
+>EOF;
+>}
 >?>
 >```
 
 > (3)、模版中加载其他模版：  
 >```
-><?php
->include SYS_VIEWS.'test.phtml';
->include SYS_VIEWS.'/w_index/test.phtml';
->?>
+>// 方法1：加载views文件夹下视图(注意文件后缀和系统配置保持一致)
+><?php include SYS_VIEWS.'test.php';?>
+><?php include SYS_VIEWS.'/w_index/test.phtml';?>
+><?php include SYS_VIEWS.'/w_index/test'.SYS_TMPL_FIX;?>
+>// 方法2：[推荐]使用辅助函数,不用关注常量
+><?php sysTmplFix('w_index/test');?>
 >```
 
 ### 四、扩展   
@@ -339,7 +348,7 @@ README.md  ------------------------------ 说明文档
 >* SYS_VIEWS：模版绝对路径常量  
 >* SYS_PRO_PATH：当前功能模块  
 
-> (2)、可配置常量,核心目录下/helper/config.php (常量名字固定不可修改)：  
+> (2)、可配置常量,核心目录下/helper/config.php (常量名字固定不可修改,值可根据需求配置)：  
 >* SYS_APP_PATH：应用路径   
 >* SYS_APP_DEFAULT：程序指向默认模块  
 >* SYS_DEBUG：调试开关(系统错误是否输出到页面)  
@@ -347,7 +356,9 @@ README.md  ------------------------------ 说明文档
 >* SYS_FLAG_LOG：程序日志开关(程序自定义日志开关)  
 >* SYS_PAGE404：404页面开关  
 >* SYS_URL_BOGUS：伪静态开关  
->* SYS_APP_URL_FIX：伪静态后缀初始值  
+>* SYS_APP_URL_FIX：伪静态后缀初始值(必须.开头)  
+>* SYS_TMPL_FIX：视图加载模版文件后缀(可修改,必须.开头)    
+>* SYS_TMPL_PARENT：视图加载父级公共模版名称(可修改)  
 >* SYS_LOG_PATH：程序日志目录  
 >* SYS_ERR_PATH：系统错误日志目录   
 
@@ -366,7 +377,8 @@ README.md  ------------------------------ 说明文档
 >* runCosts()：运行开销统计  
 >* redirect($url)：重定向
 >* jump($txt='提示', $url='')：js提示跳转  
->* sysUrlFix($url)：由拼接(如：sysUrlFix('web_about_item/id/2')) 
+>* sysUrlFix($url)：路由自动拼接,站内跳转(如：sysUrlFix('web_about_item/id/2')) 
+>* sysTmplFix($tmpl)：模版路径自动生成辅助(如：<?php sysTmplFix('w_index/test');?>)
 >* sysloger($str,$errorFile='',$errorLine='0')：系统错误日志(runtime/error/)  
 >* loger($str)：程序打印日志文件(runtime/logs/)  
 >* loger_r($str)：程序日志输出到页面(美化print_r)  

@@ -6,14 +6,15 @@
 // +----------------------------------------------------------------------
 
 class View {
- 
-    protected $var = array();
+
     protected $_controller;
     protected $_action;
- 
+    protected $vars;
+
     function __construct($controller, $action) {
         $this->_controller = $controller;
         $this->_action = $action;
+        $this->vars = array();
     }
 	
 	/**
@@ -23,7 +24,7 @@ class View {
     function set($name, $value) {
         //$this->$name = $value;
         //$this->variables[$name] = $value;
-        $this->var[$name] = $value;
+        $this->vars[$name] = $value;
     }
 	
 	/**
@@ -36,7 +37,7 @@ class View {
      */
     function render($template, $flag) {
         //从数组中将变量导入到当前的符号表。
-        extract($this->var);
+        extract($this->vars);
 
         // 默认模版
         $controller = strtolower($this->_controller);
@@ -68,7 +69,7 @@ class View {
         }*/
 
         // 页面内容文件
-        $contentPagePath = SYS_VIEWS.$controller.'/'.$action.'.phtml';
+        $contentPagePath = SYS_VIEWS.$controller.'/'.$action.SYS_TMPL_FIX;
         if(file_exists($contentPagePath)){
             $content = $contentPagePath;
         }else{
@@ -76,8 +77,8 @@ class View {
         }
 
         if($flag){
-            $commonHtml = SYS_VIEWS.'common.phtml';
-            $commonHtmlIn = SYS_VIEWS . $controller . '/common.phtml';
+            $commonHtml = SYS_VIEWS.SYS_TMPL_PARENT.SYS_TMPL_FIX;
+            $commonHtmlIn = SYS_VIEWS . $controller . '/'.SYS_TMPL_PARENT.SYS_TMPL_FIX;
             if(file_exists($commonHtmlIn)) {
                 include $commonHtmlIn;
             }else if(file_exists($commonHtml)){
